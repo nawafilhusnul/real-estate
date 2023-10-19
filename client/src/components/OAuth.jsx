@@ -2,7 +2,7 @@ import { GoogleAuthProvider, getAuth, signInWithPopup } from 'firebase/auth';
 import { app } from "../firebase.js";
 import { useDispatch } from "react-redux";
 import { signInSuccess } from "../redux/user/userSlice.js";
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 function OAuth(props) {
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -26,7 +26,7 @@ function OAuth(props) {
             })
 
             const data = await res.json();
-            dispatch(signInSuccess(data));
+            dispatch(signInSuccess(data.data));
             navigate('/')
         } catch (e) {
            console.log('Could not connect to Google')

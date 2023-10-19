@@ -35,7 +35,7 @@ function SignIn(props) {
                 return;
             }
 
-            dispatch(signInSuccess(data));
+            dispatch(signInSuccess(data.data));
             navigate('/');
         } catch (e) {
             dispatch(signInFailure(e.message));
