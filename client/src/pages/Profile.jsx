@@ -1,7 +1,14 @@
 import { useRef, useState, useEffect } from 'react';
-import { useSelector } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage'
 import { app } from "../firebase.js";
+import {
+    updateUserFailure,
+    updateUserStart,
+    updateUserSuccess,
+    resetUserSession
+} from "../redux/user/userSlice.js";
+import {useNavigate} from "react-router-dom";
 
 function Profile(props) {
     const { currentUser } = useSelector(state => state.user);
@@ -10,6 +17,10 @@ function Profile(props) {
     const [ uploadPercentage, setUploadPercentage ] = useState(0);
     const [ fileUploadError, setFileUploadError ] = useState(false);
     const [ formData, setFormData ] = useState({});
+    const dispatch = useDispatch();
+    const { loading, error } = useSelector((state) => state.user);
+    const navigate = useNavigate();
+    const [ updateSuccess, setUpdateSuccess ] = useState(false);
 
     useEffect(()=> {
         if (file) {
@@ -37,6 +48,41 @@ function Profile(props) {
                 })
             });
     };
+
+    const handleChange = (e) => {
+        setFormData({...formData, [e.target.id]: e.target.value})
+    }
+
+    const handleSubmit = async (e) => {
+        e.preventDefault()
+        try {
+            dispatch(updateUserStart());
+            const res =  await fetch(`api/user/${currentUser._id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData),
+            });
+
+            if (res.status === 401) {
+                dispatch(resetUserSession())
+                navigate('/sign-in')
+                return;
+            }
+            const data = await res.json();
+            if (!data.success) {
+                dispatch(updateUserFailure(data.message));
+                return;
+            }
+
+            dispatch(updateUserSuccess(data.data));
+            setUpdateSuccess(true);
+        } catch (e) {
+            dispatch(updateUserFailure(e.message))
+        }
+    }
+
     return (
         <div
             className='p-3 max-w-lg mx-auto'>
@@ -45,6 +91,7 @@ function Profile(props) {
                 Profile
             </h1>
             <form
+                onSubmit={handleSubmit}
                 className='flex flex-col gap-4'>
                 <input
                     onChange={e => setFile(e.target.files[0])}
@@ -81,6 +128,7 @@ function Profile(props) {
                     className='border p-3 rounded-lg'
                     id='username'
                     defaultValue={currentUser.username}
+                    onChange={handleChange}
                 />
                 <input
                     type='email'
@@ -88,6 +136,7 @@ function Profile(props) {
                     className='border p-3 rounded-lg'
                     id='email'
                     defaultValue={currentUser.email}
+                    onChange={handleChange}
                 />
                 <input
                     type='password'
@@ -95,10 +144,12 @@ function Profile(props) {
                     className='border p-3 rounded-lg'
                     id='password'
                     defaultValue={currentUser.password}
+                    onChange={handleChange}
                 />
                 <button
+                    disabled={loading}
                     className='bg-slate-700 text-white rounded-lg p-3 uppercase hover:opacity-95 disabled:bg-opacity-60'>
-                    Update
+                    {loading ? 'Loading ... ': 'Update'}
                 </button>
             </form>
             <div
@@ -112,6 +163,17 @@ function Profile(props) {
                     Sign Out
                 </span>
             </div>
+            <p
+            className='text-red-700'>
+                {
+                    error ? error : ''
+                }
+            </p>
+            <p className='text-green-700'>
+                {
+                    updateSuccess ? 'Successfully updated' : ''
+                }
+            </p>
         </div>
     );
 }
