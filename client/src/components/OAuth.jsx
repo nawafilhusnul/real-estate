@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 import { signInSuccess } from "../redux/user/userSlice.js";
 import { useNavigate } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
-function OAuth(props) {
+function OAuth() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const handleGoogleClick = async () => {

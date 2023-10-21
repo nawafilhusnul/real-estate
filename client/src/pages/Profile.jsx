@@ -12,7 +12,7 @@ import {
 } from "../redux/user/userSlice.js";
 import { useNavigate } from "react-router-dom";
 
-function Profile(props) {
+function Profile() {
     const { currentUser, loading, error } = useSelector(state => state.user);
     const fileRef = useRef(null);
     const [ file, setFile ] = useState(undefined);

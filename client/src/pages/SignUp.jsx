@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link , useNavigate } from "react-router-dom";
 
-function SignUp(props) {
+function SignUp() {
     const [ formData, setFromData ] = useState({});
     const [ error, setError ]  = useState(null);
     const [ loading, setLoading ]  = useState(false);
