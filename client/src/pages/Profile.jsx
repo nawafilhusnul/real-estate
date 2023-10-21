@@ -8,7 +8,7 @@ import {
     updateUserSuccess,
     deleteUserStart,
     deleteUserFailure,
-    deleteUserSuccess
+    deleteUserSuccess, signOutUserStart, signOutUserSuccess, signOutUserFailure
 } from "../redux/user/userSlice.js";
 import { useNavigate } from "react-router-dom";
 
@@ -67,7 +67,7 @@ function Profile(props) {
             });
 
             if (res.status === 401) {
-                dispatch(deleteUserSuccess())
+                dispatch(signOutUserSuccess())
                 navigate('/sign-in')
                 return;
             }
@@ -92,7 +92,7 @@ function Profile(props) {
             });
 
             if (res.status === 401) {
-                dispatch(deleteUserSuccess())
+                dispatch(signOutUserSuccess())
                 navigate('/sign-in')
                 return;
             }
@@ -101,6 +101,26 @@ function Profile(props) {
             navigate('/sign-in')
         } catch (e) {
             dispatch(deleteUserFailure(e.message))
+        }
+    }
+    
+    const handleSignOutUser = async () => {
+        try {
+            dispatch(signOutUserStart());
+            const res =  await fetch(`api/auth/signout`, {
+                method: 'DELETE',
+            });
+
+            if (res.status === 401) {
+                dispatch(signOutUserSuccess())
+                navigate('/sign-in')
+                return;
+            }
+
+            dispatch(signOutUserSuccess());
+            navigate('/sign-in')
+        } catch (e) {
+            dispatch(signOutUserFailure(e.message));
         }
     }
 
@@ -181,6 +201,7 @@ function Profile(props) {
                     Delete Account
                 </span>
                 <span
+                    onClick={handleSignOutUser}
                     className='text-red-700 cursor-pointer'>
                     Sign Out
                 </span>
