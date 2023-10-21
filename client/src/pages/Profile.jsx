@@ -6,7 +6,9 @@ import {
     updateUserFailure,
     updateUserStart,
     updateUserSuccess,
-    resetUserSession
+    deleteUserStart,
+    deleteUserFailure,
+    deleteUserSuccess
 } from "../redux/user/userSlice.js";
 import { useNavigate } from "react-router-dom";
 
@@ -65,7 +67,7 @@ function Profile(props) {
             });
 
             if (res.status === 401) {
-                dispatch(resetUserSession())
+                dispatch(deleteUserSuccess())
                 navigate('/sign-in')
                 return;
             }
@@ -79,6 +81,26 @@ function Profile(props) {
             setUpdateSuccess(true);
         } catch (e) {
             dispatch(updateUserFailure(e.message))
+        }
+    }
+    
+    const handleDeleteUser = async () => {
+        try {
+            dispatch(deleteUserStart());
+            const res =  await fetch(`api/user/${currentUser._id}`, {
+                method: 'DELETE',
+            });
+
+            if (res.status === 401) {
+                dispatch(deleteUserSuccess())
+                navigate('/sign-in')
+                return;
+            }
+
+            dispatch(deleteUserSuccess());
+            navigate('/sign-in')
+        } catch (e) {
+            dispatch(deleteUserFailure(e.message))
         }
     }
 
@@ -154,6 +176,7 @@ function Profile(props) {
             <div
                 className='flex justify-between mt-5'>
                 <span
+                    onClick={handleDeleteUser}
                     className='text-red-700 cursor-pointer'>
                     Delete Account
                 </span>
