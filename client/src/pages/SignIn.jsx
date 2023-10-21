@@ -40,8 +40,6 @@ function SignIn(props) {
         } catch (e) {
             dispatch(signInFailure(e.message));
         }
-
-
     };
 
     return (
