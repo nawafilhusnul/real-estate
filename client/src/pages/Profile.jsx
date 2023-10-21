@@ -11,14 +11,13 @@ import {
 import {useNavigate} from "react-router-dom";
 
 function Profile(props) {
-    const { currentUser } = useSelector(state => state.user);
+    const { currentUser, loading, error } = useSelector(state => state.user);
     const fileRef = useRef(null);
     const [ file, setFile ] = useState(undefined);
     const [ uploadPercentage, setUploadPercentage ] = useState(0);
     const [ fileUploadError, setFileUploadError ] = useState(false);
     const [ formData, setFormData ] = useState({});
     const dispatch = useDispatch();
-    const { loading, error } = useSelector((state) => state.user);
     const navigate = useNavigate();
     const [ updateSuccess, setUpdateSuccess ] = useState(false);
 
