@@ -8,7 +8,7 @@ import {
     updateUserSuccess,
     resetUserSession
 } from "../redux/user/userSlice.js";
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function Profile(props) {
     const { currentUser, loading, error } = useSelector(state => state.user);
