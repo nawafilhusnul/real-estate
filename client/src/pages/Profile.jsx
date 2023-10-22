@@ -10,7 +10,7 @@ import {
     deleteUserFailure,
     deleteUserSuccess, signOutUserStart, signOutUserSuccess, signOutUserFailure
 } from "../redux/user/userSlice.js";
-import { useNavigate } from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 
 function Profile() {
     const { currentUser, loading, error } = useSelector(state => state.user);
@@ -192,6 +192,9 @@ function Profile() {
                     className='bg-slate-700 text-white rounded-lg p-3 uppercase hover:opacity-95 disabled:bg-opacity-60'>
                     {loading ? 'Loading ... ': 'Update'}
                 </button>
+                <Link className='bg-green-700 text-white p-3 rounded-lg border uppercase text-center hover:opacity-95' to='/create-listing'>
+                    Create Listing
+                </Link>
             </form>
             <div
                 className='flex justify-between mt-5'>
