@@ -2,7 +2,7 @@ import { useState } from "react";
 import { getDownloadURL, getStorage, ref, uploadBytesResumable} from "firebase/storage";
 import { app } from "../firebase.js";
 import { useSelector } from "react-redux";
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function CreateListing() {
     const navigate = useNavigate();
