@@ -24,6 +24,7 @@ function Profile() {
     const [ updateSuccess, setUpdateSuccess ] = useState(false);
     const [ showListingError, setshowListingError ] = useState(false);
     const [ userListings, setUserListings ] = useState([]);
+    const [ deleteListingError, setDeleteListingError ] = useState(false);
     useEffect(()=> {
         if (file) {
             handleFileUpload(file);
@@ -128,7 +129,9 @@ function Profile() {
     const handleShowListings = async () => {
         try {
             setshowListingError(false);
-            const res = await fetch(`/api/user/listings/${currentUser._id}`);
+            const res = await fetch(`/api/user/listings/${currentUser._id}`, {
+                method: 'GET',
+            });
             const data = await res.json();
             if (!data.success) {
                 setshowListingError(true);
@@ -138,6 +141,23 @@ function Profile() {
             setUserListings(data.data);
         } catch (e) {
             setshowListingError(true);
+        }
+    }
+
+    const handleListingDelete = async (listingId) => {
+        try {
+            setDeleteListingError(false);
+            const res = await fetch(`/api/listing/${listingId}`, {
+                method: 'DELETE',
+            });
+            const data = await res.json();
+            if (!data.success) {
+                setshowListingError(true);
+                return;
+            }
+            await handleShowListings()
+        } catch (e) {
+            setDeleteListingError(true);
         }
     }
     return (
@@ -279,8 +299,15 @@ function Profile() {
                                 <div
                                     className='flex flex-col items-center'
                                 >
-                                    <button className='text-red-700 uppercase'>Delete</button>
-                                    <button className='text-green-700 uppercase'>Edit</button>
+                                    <button
+                                        onClick={()=>handleListingDelete(listing._id)}
+                                        className='text-red-700 uppercase hover:underline'>
+                                        Delete
+                                    </button>
+                                    <button
+                                        className='text-green-700 uppercase hover:underline'>
+                                        Edit
+                                    </button>
                                 </div>
                             </div>
                             ))
